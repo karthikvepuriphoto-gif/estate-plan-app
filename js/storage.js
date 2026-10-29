@@ -1,8 +1,16 @@
-// STORAGE ADAPTER SEAM. Swap LocalAdapter for a backend adapter (e.g. Apps Script google.script.run) without touching UI code.
-// Interface: load(person) -> Promise<answers>, save(person, answers) -> Promise<void>, people() -> Promise<string[]>
-const LocalAdapter={key:"epa.v1",_all(){return JSON.parse(localStorage.getItem(this.key)||"{}")},
+// STORAGE ADAPTER SEAM. Swap LocalAdapter for a backend adapter without touching UI code.
+// Interface (all Promises): people() -> string[], load(person) -> object, save(person, answers), rename(from,to)
+const LocalAdapter={key:"epa.v1",_all(){try{return JSON.parse(localStorage.getItem(this.key)||"{}")||{}}catch(e){return {}}},
  async people(){return Object.keys(this._all())},async load(p){return this._all()[p]||{}},
- async save(p,a){const s=this._all();s[p]=a;localStorage.setItem(this.key,JSON.stringify(s))}};
-const AppsScriptAdapter={call(fn,...x){return new Promise((r,j)=>google.script.run.withSuccessHandler(r).withFailureHandler(j)[fn](...x))},
- people(){return this.call("listPeople")},load(p){return this.call("loadAnswers",p)},save(p,a){return this.call("saveAnswers",p,a)}};
-window.Storage=(typeof google!=="undefined"&&google.script)?AppsScriptAdapter:LocalAdapter;
+ async save(p,a){const s=this._all();s[p]=a;localStorage.setItem(this.key,JSON.stringify(s))},
+ async rename(f,t){const s=this._all();if(s[f]&&!s[t]){s[t]=s[f];delete s[f];localStorage.setItem(this.key,JSON.stringify(s))}}};
+const AppsScriptAdapter={timeout:20000,
+ call(fn,...x){return new Promise((resolve,reject)=>{let done=false;const fin=(f,v)=>{if(!done){done=true;clearTimeout(t);f(v)}};
+  const t=setTimeout(()=>fin(reject,new Error("The server didn't answer in time ("+fn+").")),this.timeout);
+  try{google.script.run.withSuccessHandler(r=>{try{let o=typeof r==="string"?JSON.parse(r):r;
+     if(o&&typeof o==="object"&&"ok" in o){o.ok?fin(resolve,o.data):fin(reject,new Error(o.error||"Server error"))}else fin(resolve,o??null)}catch(e){fin(reject,new Error("Unreadable server reply from "+fn))}})
+   .withFailureHandler(e=>fin(reject,e instanceof Error?e:new Error(String(e&&e.message||e||"Unknown server error"))))[fn](...x)}catch(e){fin(reject,e)}});},
+ async people(){const r=await this.call("listPeople");return Array.isArray(r)?r:[]},
+ async load(p){const r=await this.call("loadAnswers",p);return r&&typeof r==="object"&&!Array.isArray(r)?r:{}},
+ save(p,a){return this.call("saveAnswers",p,JSON.stringify(a||{}))},rename(f,t){return this.call("renamePerson",f,t)}};
+window.EPAStorage=(typeof google!=="undefined"&&google.script&&google.script.run)?AppsScriptAdapter:LocalAdapter;
