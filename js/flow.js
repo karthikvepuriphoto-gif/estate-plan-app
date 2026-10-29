@@ -9,13 +9,17 @@ function documents(a){const d=["will","financial_poa","healthcare_directive","hi
  if(has(a,"kids","Minor children"))d.push("guardian_nomination");
  if(has(a,"kids","Minor children")||has(a,"kids","Child with special needs"))d.push("testamentary_trust");
  if(a.rlt==="Yes")d.push("living_trust");if(has(a,"assets","Pets"))d.push("pet_trust");return d;}
-function flags(a,cit){const f=[],nc=x=>x&&x!=="U.S. citizen";
+function flags(a,cit){const f=[],nc=x=>x&&x!=="U.S. citizen",cc=a.couple_citizenship;
  if(a.married==="Married"&&nc(a.spouse_citizenship))f.push("noncitizen_spouse");
  if(nc(a.citizenship)&&a.citizenship==="Non-resident (live abroad)")f.push("nonresident_alien");else if(nc(a.citizenship))f.push("domiciliary");
  if(nc(a.citizenship)&&nc(a.spouse_citizenship))f.push("both_noncitizens");
  if(a.married==="Married"&&nc(a.citizenship)!==nc(a.spouse_citizenship))f.push("mixed");
+ if(cc==="Both spouses non-citizens"){f.push("both_noncitizens","noncitizen_spouse")}
+ if(cc==="One U.S. citizen, one non-citizen"){f.push("mixed","noncitizen_spouse")}
  if(has(a,"assets","Foreign property or accounts")){f.push("foreign_wills_situs","fbar");if(/india/i.test(a.foreign_where||""))f.push("india");}
  if(a.guardian_abroad==="Yes")f.push("guardian_abroad");
- return cit?cit.cases.filter(c=>f.includes(c.id)):f;}
-g.EstateFlow={match,visible,documents,flags};
+ const u=[...new Set(f)];return cit?cit.cases.filter(c=>u.includes(c.id)):u;
+}
+function noncitizenSpouse(a){const cc=a.couple_citizenship;return a.married==="Married"&&(cc==="Both spouses non-citizens"||cc==="One U.S. citizen, one non-citizen"||(!!a.spouse_citizenship&&a.spouse_citizenship!=="U.S. citizen"));}
+g.EstateFlow={match,visible,documents,flags,noncitizenSpouse};
 if(typeof module!=="undefined")module.exports=g.EstateFlow;})(typeof window!=="undefined"?window:this);

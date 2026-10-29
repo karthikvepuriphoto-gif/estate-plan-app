@@ -1,6 +1,6 @@
 // Platform-neutral document templates. Each returns {title, sections:[{h,p:[...]}]}.
 (function(g){const W="DRAFT – for attorney review, not legal advice";
-const v=(a,k,d)=>(a[k]||"").toString().trim()||d||"[________]";
+const F=()=>g.EstateFlow||require("./flow.js");const v=(a,k,d)=>(a[k]||"").toString().trim()||d||"[________]";
 function checklist(st){return ["Sign in front of "+st.will_witnesses+" adult witness(es) who are not beneficiaries.",
  st.self_proving_affidavit==="yes"?"Add a notarized self-proving affidavit so witnesses need not testify later.":"Self-proving affidavit availability: "+st.self_proving_affidavit+" – ask your attorney.",
  "Sign the financial power of attorney before a notary"+(String(st.statutory_poa_form).startsWith("yes")?" using "+st.name+"'s statutory form.":"."),
@@ -14,7 +14,8 @@ will:(a,st)=>({title:"Last Will and Testament of "+v(a,"name"),sections:[
  {h:"2. Family",p:[a.married==="Married"?"I am married to "+v(a,"spouse_name")+".":"I am not married.","My children: "+v(a,"kid_names","none")+"."]},
  {h:"3. Executor",p:["I appoint "+v(a,"executor")+" as executor (personal representative), to serve without bond."]},
  {h:"4. Residue",p:["I give the rest of my estate: "+v(a,"residue")+". Any share for a beneficiary under "+(a.trust_age||st.age_of_majority)+" is held in the trust below."]},
- ...(a.married==="Married"&&a.spouse_citizenship&&a.spouse_citizenship!=="U.S. citizen"?[{h:"5. QDOT",p:["If my spouse is not a U.S. citizen at my death, my executor may place property passing to my spouse in a Qualified Domestic Trust under IRC §2056A with at least one U.S. trustee."]}]:[])]}),
+ ...(F().noncitizenSpouse(a)?[{h:"5. Non-citizen spouse and QDOT",p:["Because my spouse is not a U.S. citizen, the unlimited marital deduction does not apply automatically to property passing to my spouse.","If my spouse is not a U.S. citizen at my death, my executor may place property passing to my spouse in a Qualified Domestic Trust (QDOT) under IRC §2056A with at least one U.S.-citizen or U.S.-corporate trustee."]}]:[]),
+ ...(/india/i.test(a.foreign_where||"")?[{h:"6. Property in India",p:["This will does not dispose of my property located in India, which I intend to leave under a separate Indian will executed under the Indian Succession Act, 1925. Neither will revokes the other."]}]:[])]}),
 testamentary_trust:a=>({title:"Testamentary Trust for Children",sections:[{h:"Trustee",p:[v(a,"trustee")]},{h:"Terms",p:["Income and principal for health, education, maintenance and support until age "+v(a,"trust_age","25")+".","For any child with special needs, a supplemental-needs trust that does not replace public benefits."]}]}),
 living_trust:a=>({title:"Revocable Living Trust of "+v(a,"name"),sections:[{h:"Trustee",p:[v(a,"name")+" as initial trustee; successor: "+v(a,"executor")+"."]},{h:"Funding",p:["Retitle the home and non-retirement accounts into the trust; a pour-over will catches the rest."]}]}),
 financial_poa:(a,st)=>({title:"Durable Financial Power of Attorney",sections:[{h:"Agent",p:[v(a,"poa_agent")]},{h:"Effect",p:["Durable: effective now and continues if I become incapacitated."+(String(st.statutory_poa_form).startsWith("yes")?" Prepare on "+st.name+"'s statutory form.":"")]}]}),

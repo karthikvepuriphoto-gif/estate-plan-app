@@ -1,32 +1,317 @@
-{"sections":[
-{"id":"about","t":"About you","d":"The basics every document needs."},
-{"id":"family","t":"Family","d":"Spouse and children shape everything else."},
-{"id":"status","t":"Citizenship","d":"Changes federal estate tax rules for your spouse."},
-{"id":"assets","t":"What you own","d":"A rough picture is enough."},
-{"id":"people","t":"Who you trust","d":"Executor, guardians, trustees, agents."},
-{"id":"wishes","t":"Wishes","d":"Gifts, healthcare, pets."}],
-"questions":[
-{"id":"name","s":"about","type":"text","q":"Your full legal name","why":"Documents must use your exact legal name."},
-{"id":"state","s":"about","type":"state","q":"Which state do you live in?","why":"Signing rules, taxes and forms differ by state."},
-{"id":"married","s":"family","type":"choice","q":"Marital status","opts":["Married","Single","Divorced","Widowed","Domestic partner"],"why":"Spouses have legal rights that wills must respect."},
-{"id":"spouse_name","s":"family","type":"text","q":"Spouse's full legal name","when":{"married":"Married"},"why":"Named as primary beneficiary and often as agent."},
-{"id":"kids","s":"family","type":"multi","q":"Do you have children? (pick all that apply)","opts":["Minor children","Adult children","Child with special needs","Children from a prior relationship","No children"],"why":"Minors need a guardian and a trust; special needs need a supplemental trust."},
-{"id":"kid_names","s":"family","type":"text","q":"Children's full names and birth dates","when":{"kids":{"not":"No children"}},"why":"Naming every child avoids a claim of being left out."},
-{"id":"citizenship","s":"status","type":"choice","q":"Your citizenship","opts":["U.S. citizen","Green card holder","Visa holder living in U.S.","Non-resident (live abroad)"],"why":"The estate tax exemption depends on citizenship and domicile."},
-{"id":"spouse_citizenship","s":"status","type":"choice","q":"Your spouse's citizenship","opts":["U.S. citizen","Green card holder","Visa holder living in U.S.","Non-resident (live abroad)"],"when":{"married":"Married"},"why":"A non-citizen spouse can't use the unlimited marital deduction."},
-{"id":"intent_stay","s":"status","type":"yn","q":"Do you intend to stay in the U.S. indefinitely?","when":{"citizenship":["Visa holder living in U.S.","Green card holder"]},"why":"Intent to stay is what makes you a U.S. domiciliary for estate tax."},
-{"id":"assets","s":"assets","type":"multi","q":"What do you own?","opts":["Home","Retirement accounts","Life insurance","Business","Foreign property or accounts","Digital assets","Pets"],"why":"Some assets pass by beneficiary form, not by will."},
-{"id":"foreign_where","s":"assets","type":"text","q":"Which countries, and what kind of assets?","when":{"assets":"Foreign property or accounts"},"why":"A separate local will is often best for foreign property."},
-{"id":"estate_size","s":"assets","type":"choice","q":"Rough total of everything (incl. life insurance)","opts":["Under $1M","$1M–$5M","$5M–$15M","Over $15M"],"why":"Decides whether federal or state estate tax could matter."},
-{"id":"rlt","s":"assets","type":"yn","q":"Would you like a revocable living trust to avoid probate?","why":"A living trust keeps assets out of probate and private."},
-{"id":"executor","s":"people","type":"text","q":"Executor (and backup)","why":"Settles your estate and pays debts."},
-{"id":"guardian","s":"people","type":"text","q":"Guardian for minor children (and backup)","when":{"kids":"Minor children"},"why":"The court gives great weight to your nomination."},
-{"id":"guardian_abroad","s":"people","type":"yn","q":"Does your first-choice guardian live outside the U.S.?","when":{"kids":"Minor children"},"why":"Name a U.S.-based backup and trustee."},
-{"id":"trustee","s":"people","type":"text","q":"Trustee for the children's money","when":{"kids":["Minor children","Child with special needs"]},"why":"Can be different from the guardian."},
-{"id":"trust_age","s":"people","type":"choice","q":"Age the children get full control","opts":["21","25","30","Staged: 25/30/35"],"when":{"kids":["Minor children","Child with special needs"]},"why":"Without a trust they inherit outright at the age of majority."},
-{"id":"poa_agent","s":"people","type":"text","q":"Financial power of attorney agent (and backup)","why":"Handles money if you can't."},
-{"id":"hc_agent","s":"people","type":"text","q":"Healthcare agent (and backup)","why":"Makes medical decisions if you can't."},
-{"id":"residue","s":"wishes","type":"choice","q":"Who gets everything else?","opts":["Spouse, then children equally","Children equally","Other"],"why":"The residue clause covers everything not specifically gifted."},
-{"id":"life_support","s":"wishes","type":"choice","q":"If terminally ill or permanently unconscious","opts":["Do not prolong life","Prolong life","Let my agent decide"],"why":"Goes into your living will / advance directive."},
-{"id":"donor","s":"wishes","type":"yn","q":"Organ donor?","why":"Recorded in your advance directive."},
-{"id":"pet_caretaker","s":"wishes","type":"text","q":"Pet caretaker and amount for pet care","when":{"assets":"Pets"},"why":"Most states allow an enforceable pet trust."}]}
+{
+ "sections": [
+  {
+   "id": "about",
+   "t": "About you",
+   "d": "The basics every document needs."
+  },
+  {
+   "id": "family",
+   "t": "Family",
+   "d": "Spouse and children shape everything else."
+  },
+  {
+   "id": "status",
+   "t": "Citizenship",
+   "d": "Changes federal estate tax rules for your spouse."
+  },
+  {
+   "id": "assets",
+   "t": "What you own",
+   "d": "A rough picture is enough."
+  },
+  {
+   "id": "people",
+   "t": "Who you trust",
+   "d": "Executor, guardians, trustees, agents."
+  },
+  {
+   "id": "wishes",
+   "t": "Wishes",
+   "d": "Gifts, healthcare, pets."
+  }
+ ],
+ "questions": [
+  {
+   "id": "name",
+   "s": "about",
+   "type": "text",
+   "q": "Your full legal name",
+   "why": "Documents must use your exact legal name."
+  },
+  {
+   "id": "state",
+   "s": "about",
+   "type": "state",
+   "q": "Which state do you live in?",
+   "why": "Signing rules, taxes and forms differ by state."
+  },
+  {
+   "id": "married",
+   "s": "family",
+   "type": "choice",
+   "q": "Marital status",
+   "opts": [
+    "Married",
+    "Single",
+    "Divorced",
+    "Widowed",
+    "Domestic partner"
+   ],
+   "why": "Spouses have legal rights that wills must respect."
+  },
+  {
+   "id": "spouse_name",
+   "s": "family",
+   "type": "text",
+   "q": "Spouse's full legal name",
+   "when": {
+    "married": "Married"
+   },
+   "why": "Named as primary beneficiary and often as agent."
+  },
+  {
+   "id": "kids",
+   "s": "family",
+   "type": "multi",
+   "q": "Do you have children? (pick all that apply)",
+   "opts": [
+    "Minor children",
+    "Adult children",
+    "Child with special needs",
+    "Children from a prior relationship",
+    "No children"
+   ],
+   "why": "Minors need a guardian and a trust; special needs need a supplemental trust."
+  },
+  {
+   "id": "kid_names",
+   "s": "family",
+   "type": "text",
+   "q": "Children's full names and birth dates",
+   "when": {
+    "kids": {
+     "not": "No children"
+    }
+   },
+   "why": "Naming every child avoids a claim of being left out."
+  },
+  {
+   "id": "citizenship",
+   "s": "status",
+   "type": "choice",
+   "q": "Your citizenship",
+   "opts": [
+    "U.S. citizen",
+    "Green card holder",
+    "Visa holder living in U.S.",
+    "Non-resident (live abroad)"
+   ],
+   "why": "The estate tax exemption depends on citizenship and domicile."
+  },
+  {
+   "id": "spouse_citizenship",
+   "s": "status",
+   "type": "choice",
+   "q": "Your spouse's citizenship",
+   "opts": [
+    "U.S. citizen",
+    "Green card holder",
+    "Visa holder living in U.S.",
+    "Non-resident (live abroad)"
+   ],
+   "when": {
+    "married": "Married"
+   },
+   "why": "A non-citizen spouse can't use the unlimited marital deduction."
+  },
+  {
+   "id": "couple_citizenship",
+   "s": "status",
+   "type": "choice",
+   "q": "Which best describes the two of you?",
+   "opts": [
+    "Both U.S. citizens",
+    "One U.S. citizen, one non-citizen",
+    "Both spouses non-citizens"
+   ],
+   "when": {
+    "married": "Married"
+   },
+   "why": "If the surviving spouse isn't a U.S. citizen, the unlimited marital deduction doesn't apply, and a QDOT trust may be needed."
+  },
+  {
+   "id": "intent_stay",
+   "s": "status",
+   "type": "yn",
+   "q": "Do you intend to stay in the U.S. indefinitely?",
+   "when": {
+    "citizenship": [
+     "Visa holder living in U.S.",
+     "Green card holder"
+    ]
+   },
+   "why": "Intent to stay is what makes you a U.S. domiciliary for estate tax."
+  },
+  {
+   "id": "assets",
+   "s": "assets",
+   "type": "multi",
+   "q": "What do you own?",
+   "opts": [
+    "Home",
+    "Retirement accounts",
+    "Life insurance",
+    "Business",
+    "Foreign property or accounts",
+    "Digital assets",
+    "Pets"
+   ],
+   "why": "Some assets pass by beneficiary form, not by will."
+  },
+  {
+   "id": "foreign_where",
+   "s": "assets",
+   "type": "text",
+   "q": "Which countries, and what kind of assets?",
+   "when": {
+    "assets": "Foreign property or accounts"
+   },
+   "why": "A separate local will is often best for foreign property."
+  },
+  {
+   "id": "estate_size",
+   "s": "assets",
+   "type": "choice",
+   "q": "Rough total of everything (incl. life insurance)",
+   "opts": [
+    "Under $1M",
+    "$1M–$5M",
+    "$5M–$15M",
+    "Over $15M"
+   ],
+   "why": "Decides whether federal or state estate tax could matter."
+  },
+  {
+   "id": "rlt",
+   "s": "assets",
+   "type": "yn",
+   "q": "Would you like a revocable living trust to avoid probate?",
+   "why": "A living trust keeps assets out of probate and private."
+  },
+  {
+   "id": "executor",
+   "s": "people",
+   "type": "text",
+   "q": "Executor (and backup)",
+   "why": "Settles your estate and pays debts."
+  },
+  {
+   "id": "guardian",
+   "s": "people",
+   "type": "text",
+   "q": "Guardian for minor children (and backup)",
+   "when": {
+    "kids": "Minor children"
+   },
+   "why": "The court gives great weight to your nomination."
+  },
+  {
+   "id": "guardian_abroad",
+   "s": "people",
+   "type": "yn",
+   "q": "Does your first-choice guardian live outside the U.S.?",
+   "when": {
+    "kids": "Minor children"
+   },
+   "why": "Name a U.S.-based backup and trustee."
+  },
+  {
+   "id": "trustee",
+   "s": "people",
+   "type": "text",
+   "q": "Trustee for the children's money",
+   "when": {
+    "kids": [
+     "Minor children",
+     "Child with special needs"
+    ]
+   },
+   "why": "Can be different from the guardian."
+  },
+  {
+   "id": "trust_age",
+   "s": "people",
+   "type": "choice",
+   "q": "Age the children get full control",
+   "opts": [
+    "21",
+    "25",
+    "30",
+    "Staged: 25/30/35"
+   ],
+   "when": {
+    "kids": [
+     "Minor children",
+     "Child with special needs"
+    ]
+   },
+   "why": "Without a trust they inherit outright at the age of majority."
+  },
+  {
+   "id": "poa_agent",
+   "s": "people",
+   "type": "text",
+   "q": "Financial power of attorney agent (and backup)",
+   "why": "Handles money if you can't."
+  },
+  {
+   "id": "hc_agent",
+   "s": "people",
+   "type": "text",
+   "q": "Healthcare agent (and backup)",
+   "why": "Makes medical decisions if you can't."
+  },
+  {
+   "id": "residue",
+   "s": "wishes",
+   "type": "choice",
+   "q": "Who gets everything else?",
+   "opts": [
+    "Spouse, then children equally",
+    "Children equally",
+    "Other"
+   ],
+   "why": "The residue clause covers everything not specifically gifted."
+  },
+  {
+   "id": "life_support",
+   "s": "wishes",
+   "type": "choice",
+   "q": "If terminally ill or permanently unconscious",
+   "opts": [
+    "Do not prolong life",
+    "Prolong life",
+    "Let my agent decide"
+   ],
+   "why": "Goes into your living will / advance directive."
+  },
+  {
+   "id": "donor",
+   "s": "wishes",
+   "type": "yn",
+   "q": "Organ donor?",
+   "why": "Recorded in your advance directive."
+  },
+  {
+   "id": "pet_caretaker",
+   "s": "wishes",
+   "type": "text",
+   "q": "Pet caretaker and amount for pet care",
+   "when": {
+    "assets": "Pets"
+   },
+   "why": "Most states allow an enforceable pet trust."
+  }
+ ]
+}

@@ -22,6 +22,7 @@ function wrap_(fn){try{var d=fn();return JSON.stringify({ok:true,data:d===undefi
 function listPeople(){return wrap_(function(){return Object.keys(readAll_());});}
 function loadAnswers(p){return wrap_(function(){var a=readAll_()[String(p)];return (a&&typeof a==='object')?a:{};});}
 function saveAnswers(p,a){return wrap_(function(){var lock=LockService.getUserLock();lock.waitLock(10000);try{var o=readAll_();o[String(p)]=(typeof a==='string'?JSON.parse(a):a)||{};writeAll_(o);}finally{lock.releaseLock();}return true;});}
+function clearAnswers(p){return wrap_(function(){var lock=LockService.getUserLock();lock.waitLock(10000);try{var o=readAll_();delete o[String(p)];writeAll_(o);}finally{lock.releaseLock();}return true;});}
 function renamePerson(from,to){return wrap_(function(){var o=readAll_();if(o[from]&&!o[to]){o[to]=o[from];delete o[from];writeAll_(o);}return true;});}
 function createDocs(person,html){return wrap_(function(){ // html built client-side by templates.js, already watermarked
  var body='<html><body><p style="color:#a8662f;font-weight:bold">'+W+'</p>'+html+'<p style="color:#a8662f">'+W+'</p></body></html>';

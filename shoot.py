@@ -14,7 +14,7 @@ async def main():
       await pg.wait_for_timeout(300);await pg.fill("#t","Navya Vepuri");await pg.click("#next")
       await pg.click("text=Minor children");await pg.screenshot(path=f"shots/{scheme}-{n}-question.png")
       await pg.click("#next");await pg.fill("#t","Myra, Nivaan");await pg.click("#next")
-      await pg.keyboard.press("3");await pg.wait_for_timeout(300);await pg.keyboard.press("3");await pg.wait_for_timeout(300);await pg.keyboard.press("1");await pg.wait_for_timeout(300)
+      await pg.keyboard.press("3");await pg.wait_for_timeout(300);await pg.keyboard.press("3");await pg.wait_for_timeout(300);await pg.keyboard.press("3");await pg.wait_for_timeout(300);await pg.keyboard.press("1");await pg.wait_for_timeout(300)
       await pg.click("text=Home");await pg.click("text=Foreign property or accounts");await pg.click("#next");await pg.fill("#t","India - flat in Hyderabad");await pg.click("#next")
       await pg.goto(URL);await pg.click("#docs");await pg.wait_for_selector(".doc");await pg.screenshot(path=f"shots/{scheme}-{n}-drafts.png",full_page=False)
       ov=await pg.evaluate("document.documentElement.scrollWidth>innerWidth")
