@@ -100,7 +100,7 @@
    "id": "citizenship",
    "s": "status",
    "type": "choice",
-   "q": "Your citizenship",
+   "q": "Your citizenship / immigration status",
    "opts": [
     "U.S. citizen",
     "Green card holder",
@@ -113,7 +113,7 @@
    "id": "spouse_citizenship",
    "s": "status",
    "type": "choice",
-   "q": "Your spouse's citizenship",
+   "q": "Your spouse's citizenship / immigration status",
    "opts": [
     "U.S. citizen",
     "Green card holder",
@@ -123,22 +123,7 @@
    "when": {
     "married": "Married"
    },
-   "why": "A non-citizen spouse can't use the unlimited marital deduction."
-  },
-  {
-   "id": "couple_citizenship",
-   "s": "status",
-   "type": "choice",
-   "q": "Which best describes the two of you?",
-   "opts": [
-    "Both U.S. citizens",
-    "One U.S. citizen, one non-citizen",
-    "Both spouses non-citizens"
-   ],
-   "when": {
-    "married": "Married"
-   },
-   "why": "If the surviving spouse isn't a U.S. citizen, the unlimited marital deduction doesn't apply, and a QDOT trust may be needed."
+   "why": "A non-citizen spouse can't use the unlimited marital deduction. We work out whether you're both citizens, one of each, or both non-citizens from your two answers."
   },
   {
    "id": "intent_stay",

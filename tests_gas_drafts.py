@@ -22,7 +22,7 @@ async def main():
         await pg.locator(".link-row").first.click();await pg.wait_for_selector(".q");jq=await pg.locator(".q").inner_text()
         print(scheme,n,mode,"| todo:",todo,"| button rows:",sorted(set(tops)),"| busy:",busy.strip(),dis,"| toast:",tt.replace("\n"," "),href,"| after:",after.strip(),"| jumped to:",jq,"| errs:",errs)
         if mode=="ok" and n=="phone":
-          await pg.click("#homeBtn");await pg.wait_for_timeout(300);await pg.click("summary");await pg.click("#clear");await pg.wait_for_selector(".dialog");await pg.wait_for_timeout(500);await pg.screenshot(path="/workspace/epa/shots/v3-clear-confirm.png")
+          await pg.click("#homeBtn");await pg.wait_for_timeout(300);await pg.click("#clear");await pg.wait_for_selector(".dialog");await pg.wait_for_timeout(500);await pg.screenshot(path="/workspace/epa/shots/v3-clear-confirm.png")
           await pg.click("#dc");kept=await pg.evaluate("JSON.stringify(window.db)")
           await pg.click("#clear");await pg.click("#dok");await pg.wait_for_timeout(400);cleared=await pg.evaluate("JSON.stringify(window.db)")
           print("  cancel kept:",kept,"| confirm cleared:",cleared,"| clear btn disabled now:",await pg.locator("#clear").is_disabled())

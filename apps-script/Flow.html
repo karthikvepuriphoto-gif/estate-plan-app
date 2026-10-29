@@ -10,19 +10,27 @@ function documents(a){const d=["will","financial_poa","healthcare_directive","hi
  if(has(a,"kids","Minor children"))d.push("guardian_nomination");
  if(has(a,"kids","Minor children")||has(a,"kids","Child with special needs"))d.push("testamentary_trust");
  if(a.rlt==="Yes")d.push("living_trust");if(has(a,"assets","Pets"))d.push("pet_trust");return d;}
-function flags(a,cit){const f=[],nc=x=>x&&x!=="U.S. citizen",cc=a.couple_citizenship;
- if(a.married==="Married"&&nc(a.spouse_citizenship))f.push("noncitizen_spouse");
- if(nc(a.citizenship)&&a.citizenship==="Non-resident (live abroad)")f.push("nonresident_alien");else if(nc(a.citizenship))f.push("domiciliary");
- if(nc(a.citizenship)&&nc(a.spouse_citizenship))f.push("both_noncitizens");
- if(a.married==="Married"&&nc(a.citizenship)!==nc(a.spouse_citizenship))f.push("mixed");
- if(cc==="Both spouses non-citizens"){f.push("both_noncitizens","noncitizen_spouse")}
- if(cc==="One U.S. citizen, one non-citizen"){f.push("mixed","noncitizen_spouse")}
+const CIT="U.S. citizen",NRA="Non-resident (live abroad)";
+// Keep only answers to questions that are currently visible, so stale/hidden answers never drive warnings or clauses.
+function effective(flow,a){let cur={...a};for(let n=0;n<5;n++){const ids=new Set(visible(flow,cur).map(q=>q.id));const nx={};for(const k in a)if(ids.has(k)||!flow.questions.some(q=>q.id===k))nx[k]=a[k];
+ if(JSON.stringify(nx)===JSON.stringify(cur))break;cur=nx;}return cur;}
+// Single source of truth: couple category is DERIVED from the two status answers.
+function couple(a){if(a.married!=="Married"||!a.citizenship||!a.spouse_citizenship)return null;const me=a.citizenship===CIT,sp=a.spouse_citizenship===CIT;
+ return me&&sp?"both_citizens":(!me&&!sp?"both_noncitizens":"mixed");}
+function noncitizenSpouse(a){return a.married==="Married"&&!!a.spouse_citizenship&&a.spouse_citizenship!==CIT;}
+function flags(a,cit){const f=[];
+ if(a.citizenship===NRA)f.push("nonresident_alien");else if(a.citizenship&&a.citizenship!==CIT)f.push("domiciliary");
+ const c=couple(a);if(c==="both_noncitizens")f.push("both_noncitizens");if(c==="mixed")f.push("mixed");
+ if(noncitizenSpouse(a))f.push("noncitizen_spouse");
  if(has(a,"assets","Foreign property or accounts")){f.push("foreign_wills_situs","fbar");if(/india/i.test(a.foreign_where||""))f.push("india");}
- if(a.guardian_abroad==="Yes")f.push("guardian_abroad");
- const u=[...new Set(f)];return cit?cit.cases.filter(c=>u.includes(c.id)):u;
-}
-function noncitizenSpouse(a){const cc=a.couple_citizenship;return a.married==="Married"&&(cc==="Both spouses non-citizens"||cc==="One U.S. citizen, one non-citizen"||(!!a.spouse_citizenship&&a.spouse_citizenship!=="U.S. citizen"));}
-g.EstateFlow={match,visible,documents,flags,noncitizenSpouse};
+ if(a.guardian_abroad==="Yes"&&has(a,"kids","Minor children"))f.push("guardian_abroad");
+ const u=[...new Set(f)];return cit?cit.cases.filter(c=>u.includes(c.id)):u;}
+// Migrate answers saved with the old separate couple question (v3).
+function migrate(a){if(!a||!("couple_citizenship" in a))return {answers:a,changed:false};const o={...a},cc=o.couple_citizenship;delete o.couple_citizenship;
+ if(!o.spouse_citizenship){if(cc==="Both U.S. citizens")o.spouse_citizenship=CIT;else if(cc==="One U.S. citizen, one non-citizen"&&o.citizenship&&o.citizenship!==CIT)o.spouse_citizenship=CIT;}
+ if(!o.citizenship&&cc==="Both U.S. citizens")o.citizenship=CIT;
+ return {answers:o,changed:true};}
+g.EstateFlow={match,visible,documents,flags,noncitizenSpouse,couple,effective,migrate};
 if(typeof module!=="undefined")module.exports=g.EstateFlow;})(typeof window!=="undefined"?window:this);
 
 </script>

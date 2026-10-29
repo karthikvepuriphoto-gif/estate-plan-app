@@ -56,7 +56,7 @@ input:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4
 @media (prefers-reduced-motion:reduce){.spin{animation:spin 1.6s linear infinite!important}}
 #toast{display:flex;align-items:center;gap:12px;pointer-events:auto;bottom:24px}#toast:not(.on){pointer-events:none}#toast a{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}#toast.err{background:#c2352b;color:#fff}
 #toast .tx{border:0;background:none;color:inherit;opacity:.7;padding:4px;display:grid;place-items:center;min-width:32px;min-height:32px}
-.settings{margin-top:28px;border-top:1px solid var(--line);padding-top:12px}.settings summary{cursor:pointer;font-weight:500;color:var(--mute);min-height:44px;display:flex;align-items:center}
+.settings{margin-top:28px;border-top:1px solid var(--line);padding-top:12px}.set-h{font-size:15px;color:var(--mute);font-weight:600}
 .set-row{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0}.set-row small{display:block;color:var(--mute);font-size:14px}
 .scrim{position:fixed;inset:0;background:rgba(15,16,19,.45);display:grid;place-items:center;padding:20px;z-index:20}
 .dialog{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh);padding:24px;max-width:420px;width:100%}.dialog h2{font-size:20px;margin-bottom:8px}.dialog p{color:var(--mute);margin:0}.dialog .btn-group{grid-template-columns:1fr 1fr}
